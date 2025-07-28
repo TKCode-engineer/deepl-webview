@@ -11,7 +11,7 @@
     --divider: var(--vscode-panel-border);
     --input-background: var(--vscode-input-background);
     --input-border: var(--vscode-input-border);
-    --button-background: var(--vscode-button-background);
+   --button-background: var(--vscode-button-background);
     --button-foreground: var(--vscode-button-foreground);
     --button-hover: var(--vscode-button-hoverBackground);
 }

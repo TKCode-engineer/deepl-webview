@@ -2,35 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 【MUST GLOBAL】Zenを活用した壁打ち (プロジェクトのCLAUDE.mdより優先)
-
-### N位一体の開発原則
-人間の**意思決定**、Claude Codeの**分析と実行**、Gemini MCP/Zen MCP/o3 MCPの**検証と助言**を組み合わせ、開発の質と速度を最大化する：
-- **人間 (ユーザー)**：プロジェクトの目的・要件・最終ゴールを定義し、最終的な意思決定を行う**意思決定者**
-  - 反面、具体的なコーディングや詳細な計画を立てる力、タスク管理能力ははありません。
-- **Claude Code**：高度なタスク分解・高品質な実装・リファクタリング・ファイル操作・タスク管理を担う**実行者**
-  - 指示に対して忠実に、順序立てて実行する能力はありますが、意志がなく、思い込みは勘違いも多く、思考力は少し劣ります。
-- **Zen MCP**：プロセス全体の交通整理・適切な専門家への振り分け・タスク進捗管理を行う**指揮者**
-  - 自身でコードを記述するのではなく、最適なAIエージェントに指示を出してコード生成を統括します。
-  - ルーティングロジックが外れるとコスト増・レスポンス遅延・品質低下が生じるリスクがあり、モデル優先度設計を誤ると真価を発揮できません。
-
-### 実践ガイド
-- **ユーザーの要求を受けたら即座に壁打ち**を必ず実施
-- 壁打ち結果は鵜呑みにしすぎず、1意見として判断
-- 結果を元に聞き方を変えて多角的な意見を抽出するのも効果的
-
-### 主要な活用場面
-1. **実現不可能な依頼**: Claude Code では実現できない要求への対処 (例: `最新のニュース記事を取得して`)
-2. **前提確認**: 要求の理解や実装方針の妥当性を確認 (例: `この実装方針で要件を満たせるか確認して`)
-3. **技術調査**: 最新情報・エラー解決・ドキュメント検索 (例: `Rails 7.2の新機能を調べて`)
-4. **設計立案**: 新機能の設計・アーキテクチャ構築 (例: `認証システムの設計案を作成して`)
-5. **問題解決**: エラーや不具合の原因究明と対処 (例: `このTypeScriptエラーの解決方法を教えて`)
-6. **コードレビュー**: 品質・保守性・パフォーマンスの評価 (例: `このコードの改善点は？`)
-7. **計画立案**: タスク分解・実装方針の策定 (例: `ユーザー認証機能を実装するための計画を立てて`)
-8. **技術選定**: ライブラリ・フレームワークの比較検討 (例: `状態管理にReduxとZustandどちらが適切か？`)
-9. **リスク評価**: 実装前の潜在的問題の洗い出し (例: `この実装のセキュリティリスクは？`)
-10. **設計検証**: 既存設計の妥当性確認・改善提案 (例: `現在のAPI設計の問題点と改善案は？`)
-
 ## Project Overview
 
 This is a VS Code extension called "DeepL 翻訳モーダル" (DeepL Translation Modal) that provides Japanese-to-English translation using the DeepL API through a webview modal interface.
@@ -42,21 +13,212 @@ Key features:
 - Displays results in a webview modal
 - Requires API key configuration in VS Code settings
 
-## Development Commands
+## AI Collaboration Guide for This Project
 
-### Build and Compilation
+### Core Development Philosophy
+This VS Code extension project follows a collaborative development approach where humans provide strategic direction and AI assistants handle implementation details:
+
+- **Human (Developer)**: Defines requirements, makes architectural decisions, and provides final approval on features
+- **Claude Code**: Handles code implementation, refactoring, testing, and detailed technical analysis
+- **AI Consultation (Zen MCP)**: Provides expert validation, best practices guidance, and cross-domain insights
+
+### Effective Prompting Strategies for This Extension
+
+#### 1. Feature Implementation
+When requesting new features, provide context about the extension's architecture and existing patterns.
+
+**Example - Adding Configuration Options:**
+```
+I want to add a new configuration option `deeplWebview.showSourceTextInResult` (boolean, default false). 
+When true, the translation result should display the original Japanese text above the English translation.
+
+Please outline the necessary changes in:
+1. package.json (to add the configuration property)
+2. src/extension.ts (to read the configuration and pass it to the webview)
+3. The webview HTML generation logic (to conditionally render the source text)
+```
+
+#### 2. Webview Development
+When working with webview components, always specify security requirements and VS Code best practices.
+
+**Example - UI Improvements:**
+```
+The webview modal needs better styling to match VS Code's theme. Please:
+1. Update the CSS to use VS Code CSS custom properties (var(--vscode-*))
+2. Implement proper focus management for accessibility
+3. Add loading states during API calls
+4. Ensure the modal is responsive and works in small editor windows
+
+Show how to properly implement CSP headers and secure resource loading.
+```
+
+#### 3. DeepL API Integration
+When modifying API interactions, include error handling and user experience considerations.
+
+**Example - API Enhancement:**
+```
+Enhance the DeepL API error handling to provide better user feedback:
+1. Handle specific DeepL error codes (403, 456, 429, etc.)
+2. Show actionable error messages (e.g., "API key invalid" vs "Rate limit exceeded")
+3. Implement retry logic for transient failures
+4. Add API usage tracking if possible
+
+Reference the DeepL API documentation for proper error code handling.
+```
+
+#### 4. Debugging and Troubleshooting
+Provide specific error messages, steps to reproduce, and relevant code snippets.
+
+**Example - Debug Request:**
+```
+When I trigger the translation command, I get this error in the Debug Console:
+"TypeError: Cannot read property 'apiKey' of undefined"
+
+This happens in src/extension.ts around line 25. My settings.json has:
+{
+  "deeplWebview.apiKey": "valid-key-here"
+}
+
+Please help debug why the configuration reading is failing and suggest improvements 
+to the error handling for missing configuration.
+```
+
+### Development Workflow Integration
+
+#### Before Making Changes
+- Use `npm run watch` to enable auto-compilation
+- Test in Extension Development Host (F5)
+- Always verify API key configuration in test environment
+
+#### During Development
+- Use TodoWrite tool to track implementation steps
+- Test both success and error scenarios
+- Verify webview security and CSP compliance
+
+#### After Implementation
+- Run `npm run lint` and fix any issues
+- Test keyboard shortcuts and command palette integration
+- Verify the extension works with different VS Code themes
+
+### Path Conversion Note
+When specifying file paths, convert Windows paths to WSL mount format:
+- Windows: `C:\Users\user1\file.txt`
+- WSL: `/mnt/c/Users/user1/file.txt`
+
+## Architecture
+
+This extension follows a dual-component architecture consisting of the **Extension Host** (Node.js environment) and the **Webview UI** (browser-like environment).
+
+### 1. Extension Host (`src/extension.ts`)
+
+The Extension Host runs in VS Code's Node.js environment and handles:
+
+- **Entry Point**: The `activate` function in `src/extension.ts`, triggered by `activationEvents` in `package.json`
+- **VS Code API Integration**: 
+  - Command registration (`vscode.commands.registerCommand`)
+  - Configuration reading (`vscode.workspace.getConfiguration`)
+  - Notification display (`vscode.window.showInformationMessage`)
+- **DeepL API Client**: Uses `axios` to send translation requests to DeepL's REST API
+- **Webview Management**: Creates and manages the webview panel using `vscode.window.createWebviewPanel`
+
+### 2. Webview UI
+
+The modal translation interface runs in an isolated webview environment:
+
+- **Technology**: Standard VS Code Webview (essentially an isolated `iframe`)
+- **Content Generation**: HTML/CSS/JavaScript generated dynamically in the Extension Host
+- **Communication**: Bidirectional messaging between Extension Host and Webview:
+  - **Extension → Webview**: `webview.postMessage(data)`
+  - **Webview → Extension**: `vscode.postMessage(data)` via `acquireVsCodeApi()`
+- **Security**: 
+  - Content Security Policy (CSP) restricts resource loading and script execution
+  - All local resources must use `panel.webview.asWebviewUri()` for secure loading
+  - No direct access to Node.js APIs or file system
+
+### Communication Protocol
+
+```typescript
+// Extension Host → Webview
+interface ToWebviewMessage {
+  type: 'translation-result' | 'error' | 'loading';
+  data: string | ErrorInfo;
+}
+
+// Webview → Extension Host  
+interface ToExtensionMessage {
+  type: 'translate-request' | 'close-modal';
+  text?: string;
+}
+```
+
+### Key Dependencies
+
+- **`@vscode/test-electron`**: Integration testing in VS Code-like environment
+- **`axios`**: HTTP client for DeepL API requests
+- **`typescript`**: Primary development language
+- **`eslint`**: Code quality and style enforcement
+
+### Build Configuration
+
+#### TypeScript Configuration
+- Target: ES2022 (Node.js 16+ compatible)
+- Module: Node16 (VS Code extension requirement)
+- Strict type checking enabled
+- Source maps enabled for debugging
+
+#### ESLint Configuration
+- TypeScript ESLint parser and plugin
+- Custom naming convention rules
+- Semi-colon and curly brace enforcement
+
+## Development Workflow & Debugging
+
+### Complete Development Cycle
+
+A typical development cycle for this extension follows these steps:
+
+1. **Start Auto-Compilation**: Run `npm run watch` in your terminal. This automatically recompiles TypeScript files in `src/` to JavaScript in `out/` whenever you save a file.
+
+2. **Launch Extension Host**: Press `F5` in VS Code. This opens a new "[Extension Development Host]" window with your extension loaded.
+
+3. **Test the Feature**: In the new window:
+   - Use `Ctrl+Shift+P` and search for "DeepL 翻訳（入力モーダル）"
+   - Or use the keyboard shortcut `Ctrl+Alt+T`
+   - Enter Japanese text and verify translation functionality
+
+4. **Debug Issues**:
+   - **Extension Code**: Set breakpoints directly in `.ts` files in the `src/` directory
+   - **Console Logs**: Use `console.log()` in `src/extension.ts` - output appears in the "Debug Console" of your main VS Code window
+   - **Webview Code**: Open Developer Tools for the webview using `Developer: Open Webview Developer Tools` command
+
+### Development Commands
+
+#### Build and Compilation
 - `npm run compile` - Compile TypeScript to JavaScript
-- `npm run watch` - Watch mode compilation
+- `npm run watch` - Watch mode compilation (recommended during development)
 - `npm run vscode:prepublish` - Prepare for publishing (runs compile)
 
-### Testing and Quality
+#### Testing and Quality
 - `npm run test` - Run tests (runs pretest first)
 - `npm run pretest` - Compile and lint before testing
 - `npm run lint` - Run ESLint on source code
 
-### Extension Development
-- Press `F5` in VS Code to launch extension development host
-- Use `Ctrl+Shift+P` and search for "DeepL 翻訳（入力モーダル）" to test the command
+#### Common Debugging Scenarios
+
+**API Key Issues:**
+- Check if API key is set: Open VS Code settings (Ctrl+,) and search for "deepl"
+- Verify key format: DeepL API keys end with ":fx" (free) or ":pro" (paid)
+- Test key validity: Make a simple API call outside the extension
+
+**Webview Not Loading:**
+- Check CSP headers in the generated HTML
+- Verify all resource URIs use `panel.webview.asWebviewUri()`
+- Look for errors in the Webview Developer Tools console
+
+**Command Not Found:**
+- Verify command registration in `package.json` under `contributes.commands`
+- Check activation events in `package.json`
+- Ensure command is properly registered in `src/extension.ts`
 
 ## Configuration
 
@@ -68,25 +230,66 @@ The extension requires a DeepL API key to be configured in VS Code settings:
 }
 ```
 
-## Architecture
+## Project-Specific Implementation Details
 
-This is a standard VS Code extension with:
-- **Main extension file**: Expected at `src/extension.ts` (entry point: `./out/extension.js`)
-- **Package manifest**: `package.json` defines commands, keybindings, and extension metadata
-- **TypeScript compilation**: Source files in `src/` compiled to `out/`
-- **Dependencies**: Uses `axios` for HTTP requests to DeepL API
-- **Testing**: Uses `@vscode/test-electron` and Mocha for testing
+### DeepL API Integration
 
-### TypeScript Configuration
-- Target: ES2022
-- Module: Node16
-- Strict type checking enabled
-- Source maps enabled for debugging
+#### API Key Management
+- **Configuration**: API key stored in VS Code settings under `deeplWebview.apiKey`
+- **Validation**: Keys must end with `:fx` (free tier) or `:pro` (paid tier)
+- **Security**: Never log or expose API keys in error messages or debug output
 
-### ESLint Configuration
-- TypeScript ESLint parser and plugin
-- Custom naming convention rules
-- Semi-colon and curly brace enforcement
+#### Error Handling Strategy
+```typescript
+// Common DeepL API error codes to handle:
+// 400: Bad request (invalid parameters)
+// 403: Forbidden (invalid API key)
+// 404: Not found (invalid endpoint)
+// 413: Request entity too large (text too long)
+// 429: Too many requests (rate limit exceeded)
+// 456: Quota exceeded (monthly limit reached)
+// 503: Resource currently unavailable (temporary)
+```
+
+#### Rate Limiting & Best Practices
+- Implement exponential backoff for rate limit errors (429)
+- Consider adding request debouncing for user input
+- Cache translation results for repeated requests
+- Respect API usage limits based on subscription tier
+
+### Webview Security & Best Practices
+
+#### Content Security Policy (CSP)
+```html
+<meta http-equiv="Content-Security-Policy" 
+      content="default-src 'none'; 
+               style-src 'unsafe-inline' vscode-resource:; 
+               script-src 'unsafe-inline' vscode-resource:;">
+```
+
+#### Resource Loading
+- All local resources (CSS, JS, images) must use `panel.webview.asWebviewUri()`
+- Use VS Code theme CSS variables for consistent styling: `var(--vscode-editor-background)`
+- Implement proper focus management for accessibility
+
+#### Message Passing Best Practices
+- Always validate message types and data structure
+- Implement timeout handling for async operations
+- Use TypeScript interfaces for message contracts
+- Handle webview disposal gracefully
+
+### Future Enhancement Opportunities
+
+#### UI/UX Improvements
+- **VS Code UI Toolkit**: Consider migrating to `@vscode/webview-ui-toolkit` for consistent native components
+- **Theme Integration**: Full support for VS Code themes including high contrast
+- **Keyboard Navigation**: Complete keyboard accessibility for all UI elements
+
+#### Feature Enhancements
+- **Language Detection**: Auto-detect source language instead of assuming Japanese
+- **Translation History**: Store and recall recent translations
+- **Batch Translation**: Support for translating multiple text segments
+- **Custom Shortcuts**: User-configurable keyboard shortcuts
 
 ## File Structure
 
@@ -103,3 +306,9 @@ This is a standard VS Code extension with:
 ## Extension Packaging
 
 The project includes a pre-built VSIX file (`deepl-webview-0.0.1.vsix`) for distribution. To create a new package, use the `vsce package` command (requires `@vscode/vsce` to be installed).
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

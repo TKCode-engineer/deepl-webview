@@ -3,7 +3,7 @@
   "displayName": "DeepL 翻訳モーダル",
   "description": "VS Code標準モーダルUIでDeepL翻訳を行う拡張機能",
   "version": "0.0.1",
-  "publisher": "deepl-webview-publisher",
+  "publisher": "deepl-translation-tools",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -34,6 +34,18 @@
           "type": "string",
           "description": "DeepL API キー",
           "default": ""
+        },
+        "deeplWebview.defaultSourceLanguage": {
+          "type": "string",
+          "description": "デフォルトの翻訳元言語",
+          "default": "JA",
+          "enum": ["AR", "BG", "CS", "DA", "DE", "EL", "EN", "ES", "ET", "FI", "FR", "HU", "ID", "IT", "JA", "KO", "LT", "LV", "NB", "NL", "PL", "PT", "RO", "RU", "SK", "SL", "SV", "TR", "UK", "ZH"]
+        },
+        "deeplWebview.defaultTargetLanguage": {
+          "type": "string",
+          "description": "デフォルトの翻訳先言語",
+          "default": "EN",
+          "enum": ["AR", "BG", "CS", "DA", "DE", "EL", "EN-GB", "EN-US", "ES", "ET", "FI", "FR", "HU", "ID", "IT", "JA", "KO", "LT", "LV", "NB", "NL", "PL", "PT-BR", "PT-PT", "RO", "RU", "SK", "SL", "SV", "TR", "UK", "ZH"]
         }
       }
     }
